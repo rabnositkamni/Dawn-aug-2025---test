@@ -1,0 +1,339 @@
+{% liquid
+	assign header_link_text = section.settings.header_link_text
+	assign header_link_url = section.settings.header_link_url
+
+  assign text_title_above_link = section.settings.text_title_above_link
+  assign link_type = section.settings.link_type
+  assign link_title = section.settings.link_title
+  assign link_url = section.settings.link_url
+
+  assign color_active_tab = section.settings.color_active_tab
+  assign color_inactive_tab = section.settings.color_inactive_tab
+  assign tab_image_1_active = section.settings.tab_image_1_active
+  assign tab_image_1_inactive = section.settings.tab_image_1_inactive
+  assign tab_title_1 = section.settings.tab_title_1
+  assign tab_image_2_active = section.settings.tab_image_2_active
+  assign tab_image_2_inactive = section.settings.tab_image_2_inactive
+  assign tab_title_2 = section.settings.tab_title_2
+%}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    background: {{ section.settings.background }};
+
+    margin-top: {{ section.settings.margin_top_mobile | append: "px" }};
+    margin-bottom: {{ section.settings.margin_bottom_mobile | append: "px" }};
+    padding-top: {{ section.settings.padding_top_mobile | append: "px" }};
+    padding-bottom: {{ section.settings.padding_bottom_mobile | append: "px" }};
+
+
+    .tabs-with-sliders__tab .tab-title {
+      color: {{ color_inactive_tab }};
+    }
+    .tabs-with-sliders__tab.active .tab-title {
+      color: {{ color_active_tab }};
+    }
+  }
+
+  @media screen and (min-width: 992px) {
+    #shopify-section-{{ section.id }} {
+      margin-top: {{ section.settings.margin_top_desktop | append: "px" }};
+      margin-bottom: {{ section.settings.margin_bottom_desktop | append: "px" }};
+      padding-top: {{ section.settings.padding_top_desktop | append: "px" }};
+      padding-bottom: {{ section.settings.padding_bottom_desktop | append: "px" }};
+    }
+  }
+</style>
+
+<div data-section-type="tabs-with-sliders" data-section-id="{{ section.id }}" >
+  <div class="">
+    <div class="tabs-with-sliders__tabs">
+      <div class="tabs-with-sliders__tab active">
+
+      <div class="tab-image tab-image--active">
+        {{ tab_image_1_active }}
+      </div>
+      <div class="tab-image tab-image--inactive">
+        {{ tab_image_1_inactive }}
+      </div>
+      <h6 class="tab-title">
+        {{ tab_title_1 }}
+      </h6>
+
+      </div>
+      <div class="tabs-with-sliders__tab">
+        <div class="tab-image tab-image--active">
+          {{ tab_image_2_active }}
+        </div>
+        <div class="tab-image tab-image--inactive">
+          {{ tab_image_2_inactive }}
+        </div>
+        <h6 class="tab-title">
+          {{ tab_title_2 }}
+        </h6>
+      </div>
+    </div>
+
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'first_group' -%}
+          {% liquid
+            assign product = block.settings.product
+            assign color_bg_badge = block.settings.color_bg_badge
+            assign color_badge = block.settings.color_badge
+            assign badge = block.settings.badge
+            assign preferences = block.settings.preferences
+          %}
+
+
+        {%- endcase -%}
+    {%- endfor -%}
+
+
+    {% if text_title_above_link %}
+        <p>{{- text_title_above_link -}}</p>
+    {% endif %}
+
+    {% if link_url != blank and link_title != blank %}
+      <a class="{{ link_type }}" href="{{ link_url }}">
+        {{- link_title -}}
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+
+
+
+{% schema %}
+{
+  "name": "Tabs with sliders",
+  "class": "tabs-with-sliders",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "color_background",
+      "id": "background",
+      "label": "Background color section",
+      "default": "linear-gradient(146deg, rgba(120, 255, 243, 0.59), rgba(24, 79, 255, 0.63) 100%)"
+    },
+    {
+      "type": "header",
+      "content": "Tab settings"
+    },
+    {
+      "type": "color",
+      "id": "color_active_tab",
+      "default": "#0055B8",
+      "label": "Text color of the active tab"
+    },
+    {
+      "type": "color",
+      "id": "color_inactive_tab",
+      "default": "#8C8C8C",
+      "label": "Text color of the inactive tab"
+    },
+    {
+      "type": "text",
+      "id": "tab_title_1",
+      "label": "Title first tab",
+      "default": "Dog"
+    },
+    {
+      "type": "html",
+      "id": "tab_image_1_active",
+      "label": "SVG image first tab active",
+      "info": "SVG code needs to be inserted"
+    },
+    {
+      "type": "html",
+      "id": "tab_image_1_inactive",
+      "label": "SVG image first tab inactive",
+      "info": "SVG code needs to be inserted"
+    },
+    {
+      "type": "text",
+      "id": "tab_title_2",
+      "label": "Title second tab",
+      "default": "Cat"
+    },
+    {
+      "type": "html",
+      "id": "tab_image_2_active",
+      "label": "SVG image second tab active",
+      "info": "SVG code needs to be inserted"
+    },
+    {
+      "type": "html",
+      "id": "tab_image_2_inactive",
+      "label": "SVG image second tab inactive",
+      "info": "SVG code needs to be inserted"
+    },
+    {
+      "type": "header",
+      "content": "Link settings"
+    },
+    {
+      "type": "text",
+      "id": "text_title_above_link",
+      "label": "Title above link",
+      "default": "Not sure which is the best fit?"
+    },
+    {
+      "type": "select",
+      "id": "link_type",
+      "label": "Link type",
+      "options": [
+        {
+          "value": "link--underline",
+          "label": "Link underline"
+        },
+        {
+          "value": "link",
+          "label": "Link"
+        }
+      ],
+      "default": "link"
+    },
+    {
+      "type": "text",
+      "id": "link_title",
+      "label": "Link Text",
+      "default": "Buy Now"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Section Indent (Mobile)"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Margin Top (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Margin Bottom (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Bottom (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Section Indent (Desktop)"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Margin Top (Desktop)",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Margin Bottom (Desktop)",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top (Desktop)",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Bottom (Desktop)",
+      "default": 30
+    }
+  ],
+  "blocks": [
+    {
+      "type": "first_group",
+      "name": "First tab group",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "color",
+          "id": "color_bg_badge",
+          "default": "#CA4F27",
+          "label": "Badge background color"
+        },
+        {
+          "type": "color",
+          "id": "color_badge",
+          "default": "#CA4F27",
+          "label": "Badge text color"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge text"
+        },
+        {
+          "type": "richtext",
+          "id": "preferences",
+          "label": "Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tabs with sliders"
+    }
+  ]
+}
+{% endschema %}
