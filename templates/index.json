@@ -15,16 +15,83 @@
         "first_group_JP3xnp": {
           "type": "first_group",
           "settings": {
-            "product": "",
+            "product": "optimal-selection-advanced",
+            "card_title": "",
             "color_bg_badge": "#ca4f27",
-            "color_badge": "#ca4f27",
+            "color_badge": "#ffffff",
             "badge": "Most popular",
-            "preferences": "<ul><li>Screen for 270+ genetic diseases</li><li>Genetic diversity insights</li><li>50+ trait tests</li><li>ISAG 2020 DNA profile & certificate</li><li>Parentage verification & certificate</li><li>Generate litter predictions</li><li><a href=\"/products/optimal-selection-advanced\" title=\"Optimal Selection Advanced\">Learn more</a><br/><br/></li></ul>"
+            "button_title": "Add to Bag",
+            "preferences": "<ul><li>Screen for 270+ genetic diseases</li><li>Genetic diversity insights</li><li>50+ trait tests</li><li>ISAG 2020 DNA profile & certificate</li><li>Parentage verification & certificate</li><li>Generate litter predictions</li><li><strong>Learn more</strong></li></ul>"
+          }
+        },
+        "first_group_rmjzEN": {
+          "type": "first_group",
+          "settings": {
+            "product": "optimal-selection-standard",
+            "card_title": "",
+            "color_bg_badge": "#ca4f27",
+            "color_badge": "#ffffff",
+            "badge": "",
+            "button_title": "Add to Bag",
+            "preferences": "<ul><li>Screen for 270+ genetic diseases</li><li>Genetic diversity insights</li><li>50+ trait tests</li><li><strong>Learn more</strong></li></ul>"
+          }
+        },
+        "first_group_Akj97E": {
+          "type": "first_group",
+          "settings": {
+            "product": "optimal-selection-litter-pack",
+            "card_title": "Test",
+            "color_bg_badge": "#101011",
+            "color_badge": "#ffffff",
+            "badge": "Best value",
+            "button_title": "Add to Bag",
+            "preferences": "<ul><li>Screen for 270+ genetic diseases</li><li>Genetic diversity insights</li><li>50+ trait tests</li><li><strong>Learn more</strong></li></ul>"
+          }
+        },
+        "second_group_GAEkq9": {
+          "type": "second_group",
+          "settings": {
+            "product": "optimal-selection-advanced-1",
+            "card_title": "TEST Optimal Selection Standard",
+            "color_bg_badge": "#ca4f27",
+            "color_badge": "#ffffff",
+            "badge": "Most popular",
+            "button_title": "Add to Bag",
+            "preferences": "<ul><li>Screen for 270+ genetic diseases</li><li>Genetic diversity insights</li><li>50+ trait tests</li><li>ISAG 2020 DNA profile & certificate</li><li>Parentage verification & certificate</li><li>Generate litter predictions</li><li><strong>Learn more</strong></li></ul>"
+          }
+        },
+        "second_group_GHeg7L": {
+          "type": "second_group",
+          "settings": {
+            "product": "optimal-selection-standard-1",
+            "card_title": "",
+            "color_bg_badge": "#ca4f27",
+            "color_badge": "#ffffff",
+            "badge": "Most popular",
+            "button_title": "Add to Bag",
+            "preferences": "<ul><li>Screen for 270+ genetic diseases</li><li>Genetic diversity insights</li><li>50+ trait tests</li><li><strong>Learn more</strong></li></ul>"
+          }
+        },
+        "second_group_Km8hUB": {
+          "type": "second_group",
+          "settings": {
+            "product": "optimal-selection-litter-pack-1",
+            "card_title": "TEST Optimal Selection Standard",
+            "color_bg_badge": "#101011",
+            "color_badge": "#ffffff",
+            "badge": "Best value",
+            "button_title": "Add to Bag",
+            "preferences": "<ul><li>Screen for 270+ genetic diseases</li><li>Genetic diversity insights</li><li>50+ trait tests</li><li><strong>Learn more</strong><br/></li></ul>"
           }
         }
       },
       "block_order": [
-        "first_group_JP3xnp"
+        "first_group_JP3xnp",
+        "first_group_rmjzEN",
+        "first_group_Akj97E",
+        "second_group_GAEkq9",
+        "second_group_GHeg7L",
+        "second_group_Km8hUB"
       ],
       "settings": {
         "background": "linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1) 50%, rgba(222, 244, 250, 1) 50%, rgba(222, 244, 250, 1) 100%)",
