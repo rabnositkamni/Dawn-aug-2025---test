@@ -18,6 +18,4 @@ tabsSections.forEach(section => {
       suitableGroup.classList.add("active");
     })
   });
-
-  
 });

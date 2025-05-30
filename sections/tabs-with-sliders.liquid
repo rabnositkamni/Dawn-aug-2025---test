@@ -88,12 +88,15 @@
               {% liquid
                 assign product = block.settings.product
                 assign card_title = block.settings.card_title
+                assign card_image = block.settings.card_image
                 assign color_bg_badge = block.settings.color_bg_badge
                 assign color_badge = block.settings.color_badge
                 assign badge = block.settings.badge
+                assign name_package = block.settings.name_package
                 assign button_title = block.settings.button_title
                 assign preferences = block.settings.preferences
                 assign color_bg_button = block.settings.color_bg_button
+                assign color_bg_hover_button = block.settings.color_bg_hover_button
                 assign color_button = block.settings.color_button
               %}
 
@@ -111,13 +114,23 @@
                   {% endif %}
                 </div>
                 <div class="tabs__card-image">
-                  <img
-                    src="{{ product.featured_image | image_url: width: 624 }}"
-                    alt="{{ product.featured_image.alt | escape }}"
-                    width="312"
-                    height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
-                    loading="lazy"
-                  >
+                  {% if card_image %}
+                    <img
+                      src="{{ card_image | image_url: width: 624 }}"
+                      alt="{{ card_image.alt | escape }}"
+                      width="312"
+                      height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                      loading="lazy"
+                    >
+                  {% else %}
+                    <img
+                      src="{{ product.featured_image | image_url: width: 624 }}"
+                      alt="{{ product.featured_image.alt | escape }}"
+                      width="312"
+                      height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                      loading="lazy"
+                    >
+                  {% endif %}
                 </div>
 
                 {%- unless product.has_only_default_variant -%}
@@ -143,7 +156,22 @@
                 {%- endunless -%}
 
                 <div class="tabs__card-price">
-                  {{- product.price | money -}}
+                  {% if product.has_only_default_variant %}
+                    {{- product.price | money -}}
+                  {% else %}
+                    {%- for variant in product.variants -%}
+                      {% if forloop.index0 == 0 %}
+                        {% assign quantity = variant.metafields.custom.quantity_in_a_package.value | plus: 0 %}
+                        {% if quantity > 0 and name_package != blank %}
+                          {% assign price_per_unit = variant.price | divided_by: quantity %}
+                          {{- variant.price | money -}} <span> ({{- price_per_unit | money_without_trailing_zeros -}}/{{- name_package -}})</span>
+                        {% else %}
+                          {{- variant.price | money -}}
+                        {% endif %}
+                        {% break %}
+                      {% endif %}
+                    {%- endfor -%}
+                  {% endif %}
                 </div>
                 {% if button_title != blank %}
                   <div class="tabs__card-button">
@@ -164,6 +192,9 @@
                   .tabs__card.block--{{ block.id }} .tabs__card-button {
                     color: {{ color_button }};
                     background-color: {{ color_bg_button }};
+                  }
+                  .tabs__card.block--{{ block.id }} .tabs__card-button:hover {
+                    background-color: {{ color_bg_hover_button }};
                   }
                 </style>
               </a>
@@ -179,12 +210,15 @@
               {% liquid
                 assign product = block.settings.product
                 assign card_title = block.settings.card_title
+                assign card_image = block.settings.card_image
                 assign color_bg_badge = block.settings.color_bg_badge
                 assign color_badge = block.settings.color_badge
                 assign badge = block.settings.badge
+                assign name_package = block.settings.name_package
                 assign button_title = block.settings.button_title
                 assign preferences = block.settings.preferences
                 assign color_bg_button = block.settings.color_bg_button
+                assign color_bg_hover_button = block.settings.color_bg_hover_button
                 assign color_button = block.settings.color_button
               %}
 
@@ -202,13 +236,23 @@
                   {% endif %}
                 </div>
                 <div class="tabs__card-image">
-                  <img
-                    src="{{ product.featured_image | image_url: width: 624 }}"
-                    alt="{{ product.featured_image.alt | escape }}"
-                    width="312"
-                    height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
-                    loading="lazy"
-                  >
+                  {% if card_image %}
+                    <img
+                      src="{{ card_image | image_url: width: 624 }}"
+                      alt="{{ card_image.alt | escape }}"
+                      width="312"
+                      height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                      loading="lazy"
+                    >
+                  {% else %}
+                    <img
+                      src="{{ product.featured_image | image_url: width: 624 }}"
+                      alt="{{ product.featured_image.alt | escape }}"
+                      width="312"
+                      height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                      loading="lazy"
+                    >
+                  {% endif %}
                 </div>
 
                 {%- unless product.has_only_default_variant -%}
@@ -234,7 +278,22 @@
                 {%- endunless -%}
 
                 <div class="tabs__card-price">
-                  {{- product.price | money -}}
+                  {% if product.has_only_default_variant %}
+                    {{- product.price | money -}}
+                  {% else %}
+                    {%- for variant in product.variants -%}
+                      {% if forloop.index0 == 0 %}
+                        {% assign quantity = variant.metafields.custom.quantity_in_a_package.value | plus: 0 %}
+                        {% if quantity > 0 and name_package != blank %}
+                          {% assign price_per_unit = variant.price | divided_by: quantity %}
+                          {{- variant.price | money -}} <span> ({{- price_per_unit | money_without_trailing_zeros -}}/{{- name_package -}})</span>
+                        {% else %}
+                          {{- variant.price | money -}}
+                        {% endif %}
+                        {% break %}
+                      {% endif %}
+                    {%- endfor -%}
+                  {% endif %}
                 </div>
                 {% if button_title != blank %}
                   <div class="tabs__card-button">
@@ -256,16 +315,18 @@
                     color: {{ color_button }};
                     background-color: {{ color_bg_button }};
                   }
+                  .tabs__card.block--{{ block.id }} .tabs__card-button:hover {
+                    background-color: {{ color_bg_hover_button }};
+                  }
                 </style>
               </a>
-
           {%- endcase -%}
         {%- endfor -%}
       </div>
     </div>
 
     {% if text_title_above_link %}
-        <p class="tabs__text-above-link" >{{- text_title_above_link -}}</p>
+        <span class="tabs__text-above-link" >{{- text_title_above_link -}}</span>
     {% endif %}
 
     {% if link_url != blank and link_title != blank %}
@@ -475,6 +536,12 @@
           "info": "Leave blank to use product title"
         },
         {
+          "type": "image_picker",
+          "id": "card_image",
+          "label": "Card image",
+          "info": "Leave blank to use product featured image"
+        },
+        {
           "type": "color",
           "id": "color_bg_badge",
           "default": "#CA4F27",
@@ -493,6 +560,13 @@
         },
         {
           "type": "text",
+          "id": "name_package",
+          "label": "Name of the package",
+          "default": "test",
+          "info": "This name will be used to indicate the price per test/package in this format - '$570.00 ($95.00/test)'"
+        },
+        {
+          "type": "text",
           "id": "button_title",
           "label": "Button titte",
           "default": "Add to Bag"
@@ -502,6 +576,12 @@
           "id": "color_bg_button",
           "default": "#0F6BFF",
           "label": "button background color"
+        },
+        {
+          "type": "color",
+          "id": "color_bg_hover_button",
+          "default": "#3683FF",
+          "label": "button hover background color"
         },
         {
           "type": "color",
@@ -516,7 +596,7 @@
         }
       ]
     },
-    
+
     {
       "type": "second_group",
       "name": "Second tab group",
@@ -533,6 +613,12 @@
           "info": "Leave blank to use product title"
         },
         {
+          "type": "image_picker",
+          "id": "card_image",
+          "label": "Card image",
+          "info": "Leave blank to use product featured image"
+        },
+        {
           "type": "color",
           "id": "color_bg_badge",
           "default": "#CA4F27",
@@ -551,6 +637,13 @@
         },
         {
           "type": "text",
+          "id": "name_package",
+          "label": "Name of the package",
+          "default": "test",
+          "info": "This name will be used to indicate the price per test/package in this format - '$570.00 ($95.00/test)'"
+        },
+        {
+          "type": "text",
           "id": "button_title",
           "label": "Button titte",
           "default": "Add to Bag"
@@ -560,6 +653,12 @@
           "id": "color_bg_button",
           "default": "#0F6BFF",
           "label": "button background color"
+        },
+        {
+          "type": "color",
+          "id": "color_bg_hover_button",
+          "default": "#3683FF",
+          "label": "button hover background color"
         },
         {
           "type": "color",
