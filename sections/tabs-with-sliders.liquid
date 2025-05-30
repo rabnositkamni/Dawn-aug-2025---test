@@ -14,6 +14,9 @@
   assign tab_image_2_active = section.settings.tab_image_2_active
   assign tab_image_2_inactive = section.settings.tab_image_2_inactive
   assign tab_title_2 = section.settings.tab_title_2
+
+  assign count_first = 0
+  assign count_second = 0
 %}
 
 {{ 'section-tabs.css' | asset_url | stylesheet_tag }}
@@ -80,248 +83,252 @@
       </div>
     </div>
 
-    <div class="tabs__group-wrap">
-      <div class="tabs__group active tabs__group--first" data-group="group-first">
-        {%- for block in section.blocks -%}
-          {%- case block.type -%}
-            {%- when 'first_group' -%}
-              {% liquid
-                assign product = block.settings.product
-                assign card_title = block.settings.card_title
-                assign card_image = block.settings.card_image
-                assign color_bg_badge = block.settings.color_bg_badge
-                assign color_badge = block.settings.color_badge
-                assign badge = block.settings.badge
-                assign name_package = block.settings.name_package
-                assign button_title = block.settings.button_title
-                assign preferences = block.settings.preferences
-                assign color_bg_button = block.settings.color_bg_button
-                assign color_bg_hover_button = block.settings.color_bg_hover_button
-                assign color_button = block.settings.color_button
-              %}
+    <div class="tabs__groups">
+      <div class="tabs__group-wrap active"  data-group="group-first">
+        <div class="tabs__group ">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'first_group' -%}
+                {% liquid
+                  assign product = block.settings.product
+                  assign card_title = block.settings.card_title
+                  assign card_image = block.settings.card_image
+                  assign color_bg_badge = block.settings.color_bg_badge
+                  assign color_badge = block.settings.color_badge
+                  assign badge = block.settings.badge
+                  assign name_package = block.settings.name_package
+                  assign button_title = block.settings.button_title
+                  assign preferences = block.settings.preferences
+                  assign color_bg_button = block.settings.color_bg_button
+                  assign color_bg_hover_button = block.settings.color_bg_hover_button
+                  assign color_button = block.settings.color_button
+                  assign count_first = count_first | plus: 1
+                %}
 
-              <a href="{{ product.url }}" class="tabs__card block--{{ block.id }}">
-                {% if badge != blank %}
-                  <span class="tabs__card-badge">
-                    {{- badge -}}
-                  </span>
-                {% endif %}
-                <div class="tabs__card-title">
-                  {% if card_title != blank %}
-                    {{- card_title -}}
-                  {% else %}
-                    {{- product.title -}}
+                <a href="{{ product.url }}" class="tabs__card block--{{ block.id }} card-index--{{ count_first }}">
+                  {% if badge != blank %}
+                    <span class="tabs__card-badge">
+                      {{- badge -}}
+                    </span>
                   {% endif %}
-                </div>
-                <div class="tabs__card-image">
-                  {% if card_image %}
-                    <img
-                      src="{{ card_image | image_url: width: 624 }}"
-                      alt="{{ card_image.alt | escape }}"
-                      width="312"
-                      height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
-                      loading="lazy"
-                    >
-                  {% else %}
-                    <img
-                      src="{{ product.featured_image | image_url: width: 624 }}"
-                      alt="{{ product.featured_image.alt | escape }}"
-                      width="312"
-                      height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
-                      loading="lazy"
-                    >
-                  {% endif %}
-                </div>
+                  <div class="tabs__card-title">
+                    {% if card_title != blank %}
+                      {{- card_title -}}
+                    {% else %}
+                      {{- product.title -}}
+                    {% endif %}
+                  </div>
+                  <div class="tabs__card-image">
+                    {% if card_image %}
+                      <img
+                        src="{{ card_image | image_url: width: 624 }}"
+                        alt="{{ card_image.alt | escape }}"
+                        width="312"
+                        height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                        loading="lazy"
+                      >
+                    {% else %}
+                      <img
+                        src="{{ product.featured_image | image_url: width: 624 }}"
+                        alt="{{ product.featured_image.alt | escape }}"
+                        width="312"
+                        height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                        loading="lazy"
+                      >
+                    {% endif %}
+                  </div>
 
-                {%- unless product.has_only_default_variant -%}
-                  <div class="tabs__card-variants">
-                    <div class="select">
-                      <select class="select__select" >
-                        {%- for variant in product.variants -%}
-                          <option
-                            value="{{ variant.title | escape }}"
-                            {% if forloop.index0 == 0 %}
-                              selected="selected"
-                            {% endif %}
-                          >
-                            {{- variant.title -}}
-                          </option>
-                        {%- endfor -%}
-                      </select>
-                      <span class="svg-wrapper">
-                        {{- 'icon-caret.svg' | inline_asset_content -}}
-                      </span>
+                  {%- unless product.has_only_default_variant -%}
+                    <div class="tabs__card-variants">
+                      <div class="select">
+                        <select class="select__select" >
+                          {%- for variant in product.variants -%}
+                            <option
+                              value="{{ variant.title | escape }}"
+                              {% if forloop.index0 == 0 %}
+                                selected="selected"
+                              {% endif %}
+                            >
+                              {{- variant.title -}}
+                            </option>
+                          {%- endfor -%}
+                        </select>
+                        <span class="svg-wrapper">
+                          {{- 'icon-caret.svg' | inline_asset_content -}}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                {%- endunless -%}
+                  {%- endunless -%}
 
-                <div class="tabs__card-price">
-                  {% if product.has_only_default_variant %}
-                    {{- product.price | money -}}
-                  {% else %}
-                    {%- for variant in product.variants -%}
-                      {% if forloop.index0 == 0 %}
-                        {% assign quantity = variant.metafields.custom.quantity_in_a_package.value | plus: 0 %}
-                        {% if quantity > 0 and name_package != blank %}
-                          {% assign price_per_unit = variant.price | divided_by: quantity %}
-                          {{- variant.price | money -}} <span> ({{- price_per_unit | money_without_trailing_zeros -}}/{{- name_package -}})</span>
-                        {% else %}
-                          {{- variant.price | money -}}
+                  <div class="tabs__card-price">
+                    {% if product.has_only_default_variant %}
+                      {{- product.price | money -}}
+                    {% else %}
+                      {%- for variant in product.variants -%}
+                        {% if forloop.index0 == 0 %}
+                          {% assign quantity = variant.metafields.custom.quantity_in_a_package.value | plus: 0 %}
+                          {% if quantity > 0 and name_package != blank %}
+                            {% assign price_per_unit = variant.price | divided_by: quantity %}
+                            {{- variant.price | money -}} <span> ({{- price_per_unit | money_without_trailing_zeros -}}/{{- name_package -}})</span>
+                          {% else %}
+                            {{- variant.price | money -}}
+                          {% endif %}
+                          {% break %}
                         {% endif %}
-                        {% break %}
-                      {% endif %}
-                    {%- endfor -%}
+                      {%- endfor -%}
+                    {% endif %}
+                  </div>
+                  {% if button_title != blank %}
+                    <div class="tabs__card-button">
+                      {{- button_title -}}
+                    </div>
                   {% endif %}
-                </div>
-                {% if button_title != blank %}
-                  <div class="tabs__card-button">
-                    {{- button_title -}}
-                  </div>
-                {% endif %}
-                {% if preferences != blank %}
-                  <div class="tabs__card-preferences">
-                    {{- preferences -}}
-                  </div>
-                {% endif %}
+                  {% if preferences != blank %}
+                    <div class="tabs__card-preferences">
+                      {{- preferences -}}
+                    </div>
+                  {% endif %}
 
-                <style>
-                  .tabs__card.block--{{ block.id }} .tabs__card-badge {
-                    color: {{ color_badge }};
-                    background-color: {{ color_bg_badge }};
-                  }
-                  .tabs__card.block--{{ block.id }} .tabs__card-button {
-                    color: {{ color_button }};
-                    background-color: {{ color_bg_button }};
-                  }
-                  .tabs__card.block--{{ block.id }} .tabs__card-button:hover {
-                    background-color: {{ color_bg_hover_button }};
-                  }
-                </style>
-              </a>
-          {%- endcase -%}
-        {%- endfor -%}
+                  <style>
+                    .tabs__card.block--{{ block.id }} .tabs__card-badge {
+                      color: {{ color_badge }};
+                      background-color: {{ color_bg_badge }};
+                    }
+                    .tabs__card.block--{{ block.id }} .tabs__card-button {
+                      color: {{ color_button }};
+                      background-color: {{ color_bg_button }};
+                    }
+                    .tabs__card.block--{{ block.id }} .tabs__card-button:hover {
+                      background-color: {{ color_bg_hover_button }};
+                    }
+                  </style>
+                </a>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
       </div>
-    </div>
-    <div class="tabs__group-wrap">
-      <div class="tabs__group tabs__group--second" data-group="group-second">
-        {%- for block in section.blocks -%}
-          {%- case block.type -%}
-            {%- when 'second_group' -%}
-              {% liquid
-                assign product = block.settings.product
-                assign card_title = block.settings.card_title
-                assign card_image = block.settings.card_image
-                assign color_bg_badge = block.settings.color_bg_badge
-                assign color_badge = block.settings.color_badge
-                assign badge = block.settings.badge
-                assign name_package = block.settings.name_package
-                assign button_title = block.settings.button_title
-                assign preferences = block.settings.preferences
-                assign color_bg_button = block.settings.color_bg_button
-                assign color_bg_hover_button = block.settings.color_bg_hover_button
-                assign color_button = block.settings.color_button
-              %}
+      <div class="tabs__group-wrap" data-group="group-second">
+        <div class="tabs__group ">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'second_group' -%}
+                {% liquid
+                  assign product = block.settings.product
+                  assign card_title = block.settings.card_title
+                  assign card_image = block.settings.card_image
+                  assign color_bg_badge = block.settings.color_bg_badge
+                  assign color_badge = block.settings.color_badge
+                  assign badge = block.settings.badge
+                  assign name_package = block.settings.name_package
+                  assign button_title = block.settings.button_title
+                  assign preferences = block.settings.preferences
+                  assign color_bg_button = block.settings.color_bg_button
+                  assign color_bg_hover_button = block.settings.color_bg_hover_button
+                  assign color_button = block.settings.color_button
+                  assign count_second = count_second | plus: 1
+                %}
 
-              <a href="{{ product.url }}" class="tabs__card block--{{ block.id }}">
-                {% if badge != blank %}
-                  <span class="tabs__card-badge">
-                    {{- badge -}}
-                  </span>
-                {% endif %}
-                <div class="tabs__card-title">
-                  {% if card_title != blank %}
-                    {{- card_title -}}
-                  {% else %}
-                    {{- product.title -}}
+                <a href="{{ product.url }}" class="tabs__card block--{{ block.id }} card-index--{{ count_second }}">
+                  {% if badge != blank %}
+                    <span class="tabs__card-badge">
+                      {{- badge -}}
+                    </span>
                   {% endif %}
-                </div>
-                <div class="tabs__card-image">
-                  {% if card_image %}
-                    <img
-                      src="{{ card_image | image_url: width: 624 }}"
-                      alt="{{ card_image.alt | escape }}"
-                      width="312"
-                      height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
-                      loading="lazy"
-                    >
-                  {% else %}
-                    <img
-                      src="{{ product.featured_image | image_url: width: 624 }}"
-                      alt="{{ product.featured_image.alt | escape }}"
-                      width="312"
-                      height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
-                      loading="lazy"
-                    >
-                  {% endif %}
-                </div>
+                  <div class="tabs__card-title">
+                    {% if card_title != blank %}
+                      {{- card_title -}}
+                    {% else %}
+                      {{- product.title -}}
+                    {% endif %}
+                  </div>
+                  <div class="tabs__card-image">
+                    {% if card_image %}
+                      <img
+                        src="{{ card_image | image_url: width: 624 }}"
+                        alt="{{ card_image.alt | escape }}"
+                        width="312"
+                        height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                        loading="lazy"
+                      >
+                    {% else %}
+                      <img
+                        src="{{ product.featured_image | image_url: width: 624 }}"
+                        alt="{{ product.featured_image.alt | escape }}"
+                        width="312"
+                        height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                        loading="lazy"
+                      >
+                    {% endif %}
+                  </div>
 
-                {%- unless product.has_only_default_variant -%}
-                  <div class="tabs__card-variants">
-                    <div class="select">
-                      <select class="select__select" >
-                        {%- for variant in product.variants -%}
-                          <option
-                            value="{{ variant.title | escape }}"
-                            {% if forloop.index0 == 0 %}
-                              selected="selected"
-                            {% endif %}
-                          >
-                            {{- variant.title -}}
-                          </option>
-                        {%- endfor -%}
-                      </select>
-                      <span class="svg-wrapper">
-                        {{- 'icon-caret.svg' | inline_asset_content -}}
-                      </span>
+                  {%- unless product.has_only_default_variant -%}
+                    <div class="tabs__card-variants">
+                      <div class="select">
+                        <select class="select__select" >
+                          {%- for variant in product.variants -%}
+                            <option
+                              value="{{ variant.title | escape }}"
+                              {% if forloop.index0 == 0 %}
+                                selected="selected"
+                              {% endif %}
+                            >
+                              {{- variant.title -}}
+                            </option>
+                          {%- endfor -%}
+                        </select>
+                        <span class="svg-wrapper">
+                          {{- 'icon-caret.svg' | inline_asset_content -}}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                {%- endunless -%}
+                  {%- endunless -%}
 
-                <div class="tabs__card-price">
-                  {% if product.has_only_default_variant %}
-                    {{- product.price | money -}}
-                  {% else %}
-                    {%- for variant in product.variants -%}
-                      {% if forloop.index0 == 0 %}
-                        {% assign quantity = variant.metafields.custom.quantity_in_a_package.value | plus: 0 %}
-                        {% if quantity > 0 and name_package != blank %}
-                          {% assign price_per_unit = variant.price | divided_by: quantity %}
-                          {{- variant.price | money -}} <span> ({{- price_per_unit | money_without_trailing_zeros -}}/{{- name_package -}})</span>
-                        {% else %}
-                          {{- variant.price | money -}}
+                  <div class="tabs__card-price">
+                    {% if product.has_only_default_variant %}
+                      {{- product.price | money -}}
+                    {% else %}
+                      {%- for variant in product.variants -%}
+                        {% if forloop.index0 == 0 %}
+                          {% assign quantity = variant.metafields.custom.quantity_in_a_package.value | plus: 0 %}
+                          {% if quantity > 0 and name_package != blank %}
+                            {% assign price_per_unit = variant.price | divided_by: quantity %}
+                            {{- variant.price | money -}} <span> ({{- price_per_unit | money_without_trailing_zeros -}}/{{- name_package -}})</span>
+                          {% else %}
+                            {{- variant.price | money -}}
+                          {% endif %}
+                          {% break %}
                         {% endif %}
-                        {% break %}
-                      {% endif %}
-                    {%- endfor -%}
+                      {%- endfor -%}
+                    {% endif %}
+                  </div>
+                  {% if button_title != blank %}
+                    <div class="tabs__card-button">
+                      {{- button_title -}}
+                    </div>
                   {% endif %}
-                </div>
-                {% if button_title != blank %}
-                  <div class="tabs__card-button">
-                    {{- button_title -}}
-                  </div>
-                {% endif %}
-                {% if preferences != blank %}
-                  <div class="tabs__card-preferences">
-                    {{- preferences -}}
-                  </div>
-                {% endif %}
+                  {% if preferences != blank %}
+                    <div class="tabs__card-preferences">
+                      {{- preferences -}}
+                    </div>
+                  {% endif %}
 
-                <style>
-                  .tabs__card.block--{{ block.id }} .tabs__card-badge {
-                    color: {{ color_badge }};
-                    background-color: {{ color_bg_badge }};
-                  }
-                  .tabs__card.block--{{ block.id }} .tabs__card-button {
-                    color: {{ color_button }};
-                    background-color: {{ color_bg_button }};
-                  }
-                  .tabs__card.block--{{ block.id }} .tabs__card-button:hover {
-                    background-color: {{ color_bg_hover_button }};
-                  }
-                </style>
-              </a>
-          {%- endcase -%}
-        {%- endfor -%}
+                  <style>
+                    .tabs__card.block--{{ block.id }} .tabs__card-badge {
+                      color: {{ color_badge }};
+                      background-color: {{ color_bg_badge }};
+                    }
+                    .tabs__card.block--{{ block.id }} .tabs__card-button {
+                      color: {{ color_button }};
+                      background-color: {{ color_bg_button }};
+                    }
+                    .tabs__card.block--{{ block.id }} .tabs__card-button:hover {
+                      background-color: {{ color_bg_hover_button }};
+                    }
+                  </style>
+                </a>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
       </div>
     </div>
 

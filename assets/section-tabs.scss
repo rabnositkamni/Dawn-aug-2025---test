@@ -62,18 +62,50 @@
       }
     }
   }
+  .tabs__groups {
+    display: flex;
+    position: relative;
+  }
   .tabs__group-wrap {
     overflow-x: auto;
-    padding-left: 30px;
-    padding-right: 30px;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    transition: 0.5s;
+    z-index: 1;
+
+    .tabs__card {
+      opacity: 0;
+      transition: 1s;
+    }
+
+    &.active {
+      position: relative;
+      opacity: 1;
+      z-index: 2;
+
+      .tabs__card {
+        opacity: 1;
+      }
+      .card-index--1 {
+        transition-delay: 0.4s;
+      }
+      .card-index--2 {
+        transition-delay: 0.6s;
+      }
+      .card-index--3 {
+        transition-delay: 0.8s;
+      }
+    }
+
     .tabs__group {
       width: fit-content;
       margin: 40px auto 30px;
       gap: 64px;
-      display: none;
-      &.active {
-        display: flex;
-      }
+      display: flex;
+      padding-left: 30px;
+      padding-right: 30px;
       .tabs__card {
         display: flex;
         flex-direction: column;

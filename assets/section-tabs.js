@@ -7,10 +7,10 @@ tabsSections.forEach(section => {
   tabs.forEach(tab => {
     tab.addEventListener("click", ()=>{
       const dataGroup = tab.getAttribute('data-group');
-      const suitableGroup = section.querySelector(`.tabs__group[data-group="${dataGroup}"]`);
+      const suitableGroup = section.querySelector(`.tabs__group-wrap[data-group="${dataGroup}"]`);
 
       const activeTab = section.querySelector('.tabs__tab.active');
-      const activeGroup = section.querySelector('.tabs__group.active');
+      const activeGroup = section.querySelector('.tabs__group-wrap.active');
       activeTab.classList.remove("active");
       activeGroup.classList.remove("active");
 
