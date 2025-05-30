@@ -1,6 +1,7 @@
 :root {
   --color-wet-nose: #101011;
   --color-blue-clue: #0F6BFF;
+  --color-blue-clue-hover: #3683FF;
   --color-bone: #F6F6F6;
   --color-wolf: #CCCCCC;
   --color-weimaraner: #636364;
@@ -207,9 +208,13 @@
   line-height: 1.4285em;
   letter-spacing: 0.03em;
   padding: 7px 0 9px 29px;
+  transition: 0.3s;
 }
 [data-section-type=tabs] .tabs__group-wrap .tabs__group .tabs__card .tabs__card-preferences ul li strong {
   color: var(--color-blue-clue);
+}
+[data-section-type=tabs] .tabs__group-wrap .tabs__group .tabs__card .tabs__card-preferences ul li strong:hover {
+  color: var(--color-blue-clue-hover);
 }
 [data-section-type=tabs] .tabs__text-above-link {
   text-align: center;
@@ -233,10 +238,18 @@
   color: var(--color-blue-clue);
   font-size: 1.4rem;
   line-height: 1.4285em;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0.03em;
   margin-top: 15px;
+  transition: 0.3s;
+}
+[data-section-type=tabs] .tabs__bottom-link:hover {
+  color: var(--color-blue-clue-hover);
+}
+[data-section-type=tabs] .tabs__bottom-link:hover svg {
+  transform: translateX(5px);
 }
 [data-section-type=tabs] .tabs__bottom-link svg {
   margin-left: 5px;
+  transition: 0.3s;
 }
