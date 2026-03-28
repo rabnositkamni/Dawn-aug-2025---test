@@ -1,0 +1,690 @@
+{% liquid
+  assign header_link_text = section.settings.header_link_text
+  assign header_link_url = section.settings.header_link_url
+
+  assign text_title_above_link = section.settings.text_title_above_link
+  assign link_title = section.settings.link_title
+  assign link_url = section.settings.link_url
+
+  assign color_active_tab = section.settings.color_active_tab
+  assign color_inactive_tab = section.settings.color_inactive_tab
+  assign tab_image_1_active = section.settings.tab_image_1_active
+  assign tab_image_1_inactive = section.settings.tab_image_1_inactive
+  assign tab_title_1 = section.settings.tab_title_1
+  assign tab_image_2_active = section.settings.tab_image_2_active
+  assign tab_image_2_inactive = section.settings.tab_image_2_inactive
+  assign tab_title_2 = section.settings.tab_title_2
+
+  assign count_first = 0
+  assign count_second = 0
+%}
+
+{{ 'section-tabs.css' | asset_url | stylesheet_tag }}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    background: {{ section.settings.background }};
+
+    margin-top: {{ section.settings.margin_top_mobile | append: "px" }};
+    margin-bottom: {{ section.settings.margin_bottom_mobile | append: "px" }};
+    padding-top: {{ section.settings.padding_top_mobile | append: "px" }};
+    padding-bottom: {{ section.settings.padding_bottom_mobile | append: "px" }};
+
+    .tabs__tab .tab-title {
+      color: {{ color_inactive_tab }};
+    }
+    .tabs__tab.active .tab-title {
+      color: {{ color_active_tab }};
+    }
+    .tabs__tabs {
+      border-bottom-color: {{ color_inactive_tab }};
+    }
+    .tabs__tabs .tabs__tab.active:after {
+      background-color: {{ color_active_tab }};
+    }
+  }
+
+  @media screen and (min-width: 992px) {
+    #shopify-section-{{ section.id }} {
+      margin-top: {{ section.settings.margin_top_desktop | append: "px" }};
+      margin-bottom: {{ section.settings.margin_bottom_desktop | append: "px" }};
+      padding-top: {{ section.settings.padding_top_desktop | append: "px" }};
+      padding-bottom: {{ section.settings.padding_bottom_desktop | append: "px" }};
+    }
+  }
+</style>
+
+<div data-section-type="tabs" data-section-id="{{ section.id }}" class="js-waiting">
+  <div class="tabs__container">
+    <div class="tabs__tabs">
+      <div class="tabs__tab active" data-group="group-first">
+
+      <div class="tab-image tab-image--active">
+        {{ tab_image_1_active }}
+      </div>
+      <div class="tab-image tab-image--inactive">
+        {{ tab_image_1_inactive }}
+      </div>
+      <span class="tab-title">
+        {{ tab_title_1 }}
+      </span>
+
+      </div>
+      <div class="tabs__tab" data-group="group-second">
+        <div class="tab-image tab-image--active">
+          {{ tab_image_2_active }}
+        </div>
+        <div class="tab-image tab-image--inactive">
+          {{ tab_image_2_inactive }}
+        </div>
+        <span class="tab-title">
+          {{ tab_title_2 }}
+        </span>
+      </div>
+    </div>
+
+    <div class="tabs__groups">
+      <div class="tabs__group-wrap active"  data-group="group-first">
+        <div class="tabs__group ">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'first_group' -%}
+                {% liquid
+                  assign product = block.settings.product
+                  assign card_title = block.settings.card_title
+                  assign card_image = block.settings.card_image
+                  assign color_bg_badge = block.settings.color_bg_badge
+                  assign color_badge = block.settings.color_badge
+                  assign badge = block.settings.badge
+                  assign name_package = block.settings.name_package
+                  assign button_title = block.settings.button_title
+                  assign preferences = block.settings.preferences
+                  assign color_bg_button = block.settings.color_bg_button
+                  assign color_bg_hover_button = block.settings.color_bg_hover_button
+                  assign color_button = block.settings.color_button
+                  assign count_first = count_first | plus: 1
+                %}
+
+                <a href="{{ product.url }}" class="tabs__card block--{{ block.id }} card-index--{{ count_first }}">
+                  {% if badge != blank %}
+                    <span class="tabs__card-badge">
+                      {{- badge -}}
+                    </span>
+                  {% endif %}
+                  <div class="tabs__card-title">
+                    {% if card_title != blank %}
+                      {{- card_title -}}
+                    {% else %}
+                      {{- product.title -}}
+                    {% endif %}
+                  </div>
+                  <div class="tabs__card-image">
+                    {% if card_image %}
+                      <img
+                        src="{{ card_image | image_url: width: 624 }}"
+                        alt="{{ card_image.alt | escape }}"
+                        width="312"
+                        height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                        loading="lazy"
+                      >
+                    {% else %}
+                      <img
+                        src="{{ product.featured_image | image_url: width: 624 }}"
+                        alt="{{ product.featured_image.alt | escape }}"
+                        width="312"
+                        height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                        loading="lazy"
+                      >
+                    {% endif %}
+                  </div>
+
+                  {%- unless product.has_only_default_variant -%}
+                    <div class="tabs__card-variants">
+                      <div class="select">
+                        <select class="select__select" >
+                          {%- for variant in product.variants -%}
+                            <option
+                              value="{{ variant.title | escape }}"
+                              {% if forloop.index0 == 0 %}
+                                selected="selected"
+                              {% endif %}
+                            >
+                              {{- variant.title -}}
+                            </option>
+                          {%- endfor -%}
+                        </select>
+                        <span class="svg-wrapper">
+                          {{- 'icon-caret.svg' | inline_asset_content -}}
+                        </span>
+                      </div>
+                    </div>
+                  {%- endunless -%}
+
+                  <div class="tabs__card-price">
+                    {% if product.has_only_default_variant %}
+                      {{- product.price | money -}}
+                    {% else %}
+                      {%- for variant in product.variants -%}
+                        {% if forloop.index0 == 0 %}
+                          {% assign quantity = variant.metafields.custom.quantity_in_a_package.value | plus: 0 %}
+                          {% if quantity > 0 and name_package != blank %}
+                            {% assign price_per_unit = variant.price | divided_by: quantity %}
+                            {{- variant.price | money -}} <span> ({{- price_per_unit | money_without_trailing_zeros -}}/{{- name_package -}})</span>
+                          {% else %}
+                            {{- variant.price | money -}}
+                          {% endif %}
+                          {% break %}
+                        {% endif %}
+                      {%- endfor -%}
+                    {% endif %}
+                  </div>
+                  {% if button_title != blank %}
+                    <div class="tabs__card-button">
+                      {{- button_title -}}
+                    </div>
+                  {% endif %}
+                  {% if preferences != blank %}
+                    <div class="tabs__card-preferences">
+                      {{- preferences -}}
+                    </div>
+                  {% endif %}
+
+                  <style>
+                    .tabs__card.block--{{ block.id }} .tabs__card-badge {
+                      color: {{ color_badge }};
+                      background-color: {{ color_bg_badge }};
+                    }
+                    .tabs__card.block--{{ block.id }} .tabs__card-button {
+                      color: {{ color_button }};
+                      background-color: {{ color_bg_button }};
+                    }
+                    .tabs__card.block--{{ block.id }} .tabs__card-button:hover {
+                      background-color: {{ color_bg_hover_button }};
+                    }
+                  </style>
+                </a>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      </div>
+      <div class="tabs__group-wrap" data-group="group-second">
+        <div class="tabs__group ">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'second_group' -%}
+                {% liquid
+                  assign product = block.settings.product
+                  assign card_title = block.settings.card_title
+                  assign card_image = block.settings.card_image
+                  assign color_bg_badge = block.settings.color_bg_badge
+                  assign color_badge = block.settings.color_badge
+                  assign badge = block.settings.badge
+                  assign name_package = block.settings.name_package
+                  assign button_title = block.settings.button_title
+                  assign preferences = block.settings.preferences
+                  assign color_bg_button = block.settings.color_bg_button
+                  assign color_bg_hover_button = block.settings.color_bg_hover_button
+                  assign color_button = block.settings.color_button
+                  assign count_second = count_second | plus: 1
+                %}
+
+                <a href="{{ product.url }}" class="tabs__card block--{{ block.id }} card-index--{{ count_second }}">
+                  {% if badge != blank %}
+                    <span class="tabs__card-badge">
+                      {{- badge -}}
+                    </span>
+                  {% endif %}
+                  <div class="tabs__card-title">
+                    {% if card_title != blank %}
+                      {{- card_title -}}
+                    {% else %}
+                      {{- product.title -}}
+                    {% endif %}
+                  </div>
+                  <div class="tabs__card-image">
+                    {% if card_image %}
+                      <img
+                        src="{{ card_image | image_url: width: 624 }}"
+                        alt="{{ card_image.alt | escape }}"
+                        width="312"
+                        height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                        loading="lazy"
+                      >
+                    {% else %}
+                      <img
+                        src="{{ product.featured_image | image_url: width: 624 }}"
+                        alt="{{ product.featured_image.alt | escape }}"
+                        width="312"
+                        height="{{ 312 | divided_by: product.featured_image.aspect_ratio | ceil }}"
+                        loading="lazy"
+                      >
+                    {% endif %}
+                  </div>
+
+                  {%- unless product.has_only_default_variant -%}
+                    <div class="tabs__card-variants">
+                      <div class="select">
+                        <select class="select__select" >
+                          {%- for variant in product.variants -%}
+                            <option
+                              value="{{ variant.title | escape }}"
+                              {% if forloop.index0 == 0 %}
+                                selected="selected"
+                              {% endif %}
+                            >
+                              {{- variant.title -}}
+                            </option>
+                          {%- endfor -%}
+                        </select>
+                        <span class="svg-wrapper">
+                          {{- 'icon-caret.svg' | inline_asset_content -}}
+                        </span>
+                      </div>
+                    </div>
+                  {%- endunless -%}
+
+                  <div class="tabs__card-price">
+                    {% if product.has_only_default_variant %}
+                      {{- product.price | money -}}
+                    {% else %}
+                      {%- for variant in product.variants -%}
+                        {% if forloop.index0 == 0 %}
+                          {% assign quantity = variant.metafields.custom.quantity_in_a_package.value | plus: 0 %}
+                          {% if quantity > 0 and name_package != blank %}
+                            {% assign price_per_unit = variant.price | divided_by: quantity %}
+                            {{- variant.price | money -}} <span> ({{- price_per_unit | money_without_trailing_zeros -}}/{{- name_package -}})</span>
+                          {% else %}
+                            {{- variant.price | money -}}
+                          {% endif %}
+                          {% break %}
+                        {% endif %}
+                      {%- endfor -%}
+                    {% endif %}
+                  </div>
+                  {% if button_title != blank %}
+                    <div class="tabs__card-button">
+                      {{- button_title -}}
+                    </div>
+                  {% endif %}
+                  {% if preferences != blank %}
+                    <div class="tabs__card-preferences">
+                      {{- preferences -}}
+                    </div>
+                  {% endif %}
+
+                  <style>
+                    .tabs__card.block--{{ block.id }} .tabs__card-badge {
+                      color: {{ color_badge }};
+                      background-color: {{ color_bg_badge }};
+                    }
+                    .tabs__card.block--{{ block.id }} .tabs__card-button {
+                      color: {{ color_button }};
+                      background-color: {{ color_bg_button }};
+                    }
+                    .tabs__card.block--{{ block.id }} .tabs__card-button:hover {
+                      background-color: {{ color_bg_hover_button }};
+                    }
+                  </style>
+                </a>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+
+    {% if text_title_above_link %}
+        <span class="tabs__text-above-link" >{{- text_title_above_link -}}</span>
+    {% endif %}
+
+    {% if link_url != blank and link_title != blank %}
+      <a class="tabs__bottom-link" href="{{ link_url }}">
+        {{- link_title -}}
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M9.69194 0.141357L15.5505 5.99997L9.69194 11.8586L8.80806 10.9747L13.1567 6.62469L0.5 6.62497V5.37497L13.1567 5.37469L8.80806 1.02524L9.69194 0.141357Z" fill="#0F6BFF"/>
+        </svg>
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+
+<script src="{{ 'section-tabs.js' | asset_url }}" defer="defer"></script>
+
+
+
+{% schema %}
+{
+  "name": "Tabs",
+  "class": "tabs",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "color_background",
+      "id": "background",
+      "label": "Background color section",
+      "default": "linear-gradient(146deg, rgba(120, 255, 243, 0.59), rgba(24, 79, 255, 0.63) 100%)"
+    },
+    {
+      "type": "header",
+      "content": "Tab settings"
+    },
+    {
+      "type": "color",
+      "id": "color_active_tab",
+      "default": "#0055B8",
+      "label": "Text color of the active tab"
+    },
+    {
+      "type": "color",
+      "id": "color_inactive_tab",
+      "default": "#8C8C8C",
+      "label": "Text color of the inactive tab"
+    },
+    {
+      "type": "text",
+      "id": "tab_title_1",
+      "label": "Title first tab",
+      "default": "Dog"
+    },
+    {
+      "type": "html",
+      "id": "tab_image_1_active",
+      "label": "SVG image first tab active",
+      "info": "SVG code needs to be inserted"
+    },
+    {
+      "type": "html",
+      "id": "tab_image_1_inactive",
+      "label": "SVG image first tab inactive",
+      "info": "SVG code needs to be inserted"
+    },
+    {
+      "type": "text",
+      "id": "tab_title_2",
+      "label": "Title second tab",
+      "default": "Cat"
+    },
+    {
+      "type": "html",
+      "id": "tab_image_2_active",
+      "label": "SVG image second tab active",
+      "info": "SVG code needs to be inserted"
+    },
+    {
+      "type": "html",
+      "id": "tab_image_2_inactive",
+      "label": "SVG image second tab inactive",
+      "info": "SVG code needs to be inserted"
+    },
+    {
+      "type": "header",
+      "content": "Link settings"
+    },
+    {
+      "type": "text",
+      "id": "text_title_above_link",
+      "label": "Title above link",
+      "default": "Not sure which is the best fit?"
+    },
+    {
+      "type": "text",
+      "id": "link_title",
+      "label": "Link Text",
+      "default": "Buy Now"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Section Indent (Mobile)"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Margin Top (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Margin Bottom (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Bottom (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Section Indent (Desktop)"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Margin Top (Desktop)",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Margin Bottom (Desktop)",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top (Desktop)",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Bottom (Desktop)",
+      "default": 30
+    }
+  ],
+  "blocks": [
+    {
+      "type": "first_group",
+      "name": "First tab group",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "card_title",
+          "label": "Card title",
+          "info": "Leave blank to use product title"
+        },
+        {
+          "type": "image_picker",
+          "id": "card_image",
+          "label": "Card image",
+          "info": "Leave blank to use product featured image"
+        },
+        {
+          "type": "color",
+          "id": "color_bg_badge",
+          "default": "#CA4F27",
+          "label": "Badge background color"
+        },
+        {
+          "type": "color",
+          "id": "color_badge",
+          "default": "#FFFFFF",
+          "label": "Badge text color"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge text"
+        },
+        {
+          "type": "text",
+          "id": "name_package",
+          "label": "Name of the package",
+          "default": "test",
+          "info": "This name will be used to indicate the price per test/package in this format - '$570.00 ($95.00/test)'"
+        },
+        {
+          "type": "text",
+          "id": "button_title",
+          "label": "Button titte",
+          "default": "Add to Bag"
+        },
+        {
+          "type": "color",
+          "id": "color_bg_button",
+          "default": "#0F6BFF",
+          "label": "button background color"
+        },
+        {
+          "type": "color",
+          "id": "color_bg_hover_button",
+          "default": "#3683FF",
+          "label": "button hover background color"
+        },
+        {
+          "type": "color",
+          "id": "color_button",
+          "default": "#FFFFFF",
+          "label": "button text color"
+        },
+        {
+          "type": "richtext",
+          "id": "preferences",
+          "label": "Text"
+        }
+      ]
+    },
+
+    {
+      "type": "second_group",
+      "name": "Second tab group",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "card_title",
+          "label": "Card title",
+          "info": "Leave blank to use product title"
+        },
+        {
+          "type": "image_picker",
+          "id": "card_image",
+          "label": "Card image",
+          "info": "Leave blank to use product featured image"
+        },
+        {
+          "type": "color",
+          "id": "color_bg_badge",
+          "default": "#CA4F27",
+          "label": "Badge background color"
+        },
+        {
+          "type": "color",
+          "id": "color_badge",
+          "default": "#FFFFFF",
+          "label": "Badge text color"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge text"
+        },
+        {
+          "type": "text",
+          "id": "name_package",
+          "label": "Name of the package",
+          "default": "test",
+          "info": "This name will be used to indicate the price per test/package in this format - '$570.00 ($95.00/test)'"
+        },
+        {
+          "type": "text",
+          "id": "button_title",
+          "label": "Button titte",
+          "default": "Add to Bag"
+        },
+        {
+          "type": "color",
+          "id": "color_bg_button",
+          "default": "#0F6BFF",
+          "label": "button background color"
+        },
+        {
+          "type": "color",
+          "id": "color_bg_hover_button",
+          "default": "#3683FF",
+          "label": "button hover background color"
+        },
+        {
+          "type": "color",
+          "id": "color_button",
+          "default": "#FFFFFF",
+          "label": "button text color"
+        },
+        {
+          "type": "richtext",
+          "id": "preferences",
+          "label": "Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tabs"
+    }
+  ]
+}
+{% endschema %}
